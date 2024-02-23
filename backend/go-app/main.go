@@ -4705,6 +4705,29 @@ func handleAppZipUpload(resp http.ResponseWriter, request *http.Request) {
 	resp.Write([]byte("OK"))
 }
 
+func HandleGetYourSelf(resp http.ResponseWriter, request *http.Request) {
+    data, err := shuffle.ParseLoginParameters(resp, request)
+    data.Username = strings.ToLower(strings.TrimSpace(data.Username))
+    
+    ctx := shuffle.GetContext(request)
+    user, err := shuffle.GetOrg(ctx, "")
+    if err != nil {
+        resp.WriteHeader(401)
+		log.Printf("[WARNING] Error for %s:", err)
+        resp.Write([]byte(`{"success": false, "reason": "Username and/or password is incorrect"}`))
+        return
+    }
+    userJSON, err := json.Marshal(user)
+    if err != nil {
+        resp.WriteHeader(500)
+        resp.Write([]byte(`{"success": false, "reason": "Error marshaling user data"}`))
+        return
+    }
+
+    resp.Header().Set("Content-Type", "application/json")
+    resp.WriteHeader(http.StatusOK)
+    resp.Write(userJSON)
+}
 
 
 func initHandlers() {
@@ -4753,6 +4776,7 @@ func initHandlers() {
 	r.HandleFunc("/api/v1/users/register", handleRegister).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/v1/users/checkusers", checkAdminLogin).Methods("GET", "OPTIONS")
 	r.HandleFunc("/api/v1/users/getinfo", handleInfo).Methods("GET", "OPTIONS")
+	r.HandleFunc("/api/v1/users/getYourSelf", HandleGetYourSelf).Methods("GET", "OPTIONS")
 
 	r.HandleFunc("/api/v1/users/generateapikey", shuffle.HandleApiGeneration).Methods("GET", "POST", "OPTIONS")
 	r.HandleFunc("/api/v1/users/logout", shuffle.HandleLogout).Methods("POST", "OPTIONS")
@@ -4906,6 +4930,7 @@ func initHandlers() {
 	r.HandleFunc("/api/v1/orgs/{orgId}/change", shuffle.HandleChangeUserOrg).Methods("POST", "OPTIONS") // Swaps to the org
 
 	r.HandleFunc("/api/v1/orgs/{orgId}", shuffle.HandleDeleteOrg).Methods("DELETE", "OPTIONS")
+	r.HandleFunc("/api/v1/subOrg/{orgId}", shuffle.HandleGetSubOrg).Methods("GET", "OPTIONS")
 
 	// This is a new API that validates if a key has been seen before.
 	// Not sure what the best course of action is for it.
