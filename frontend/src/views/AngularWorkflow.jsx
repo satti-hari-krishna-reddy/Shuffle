@@ -472,6 +472,7 @@ const AngularWorkflow = (defaultprops) => {
   const [sourceValue, setSourceValue] = React.useState({});
   const [destinationValue, setDestinationValue] = React.useState({});
   const [conditionValue, setConditionValue] = React.useState({});
+  const [tmpConditionValue, setTmpConditionValue] = React.useState({});
   const [dragging, setDragging] = React.useState(false);
   const [showWorkflowRevisions, setShowWorkflowRevisions] = React.useState(false);
   const [selectedRevision, setSelectedRevision] = useState({})
@@ -8948,7 +8949,7 @@ if (
 
   const AppConditionHandler = (props) => {
     const { tmpdata, type } = props;
-    const [data] = useState(tmpdata);
+    const [data] = useState({...tmpdata});
     const [multiline, setMultiline] = useState(false);
     const [showAutocomplete, setShowAutocomplete] = React.useState(false);
     const [actionlist, setActionlist] = React.useState([]);
@@ -9546,8 +9547,8 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "equals";
-                    setConditionValue(conditionValue);
+                    tmpConditionValue.value = "equals";
+                    setTmpConditionValue(tmpConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"equals"}
@@ -9557,8 +9558,8 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "does not equal";
-                    setConditionValue(conditionValue);
+                    tmpConditionValue.value = "does not equal";
+                    setTmpConditionValue(tmpConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"does not equal"}
@@ -9682,6 +9683,7 @@ if (
             style={{ borderRadius: "0px" }}
             variant="contained"
             onClick={() => {
+              setConditionValue(tmpConditionValue);
               setSelectedEdge({});
 
               var data = {
