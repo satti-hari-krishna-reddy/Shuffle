@@ -9548,8 +9548,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    tmpConditionValue.value = "equals";
-                    setTmpConditionValue(tmpConditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "equals";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"equals"}
@@ -9559,8 +9560,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    tmpConditionValue.value = "does not equal";
-                    setTmpConditionValue(tmpConditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "does not equal";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"does not equal"}
@@ -9570,8 +9572,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "startswith";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "startswith";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"starts with"}
@@ -9581,8 +9584,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "endswith";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "endswith";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"ends with"}
@@ -9592,8 +9596,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "contains";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "contains";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"contains"}
@@ -9603,8 +9608,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "contains_any_of";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "contains_any_of";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"contains_any_of"}
@@ -9614,8 +9620,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "matches regex";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "matches regex";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"matches regex"}
@@ -9625,8 +9632,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "larger than";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "larger than";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"larger than"}
@@ -9636,8 +9644,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "less than";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "less than";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"less than"}
@@ -9647,8 +9656,9 @@ if (
                 <MenuItem
                   style={menuItemStyle}
                   onClick={(e) => {
-                    conditionValue.value = "is empty";
-                    setConditionValue(conditionValue);
+                    const newConditionValue = { ...conditionValue };
+                    newConditionValue.value = "is empty";
+                    setConditionValue(newConditionValue);
                     setVariableAnchorEl(null);
                   }}
                   key={"is empty"}
