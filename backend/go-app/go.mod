@@ -1,6 +1,6 @@
 module shuffle-shared
 
-// replace github.com/shuffle/shuffle-shared => ../../../shuffle-shared
+replace github.com/shuffle/shuffle-shared => github.com/satti-hari-krishna-reddy/shuffle-shared v0.0.0-20240304071422-0fcd8f713ee9
 
 go 1.19
 
@@ -52,7 +52,7 @@ require (
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
-	github.com/frikky/schemaless v0.0.5 // indirect
+	github.com/frikky/schemaless v0.0.6 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect

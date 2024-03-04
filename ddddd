@@ -1,0 +1,252 @@
+[33mcommit 154d6d6e2c5c5c9898e7291647cc547eb7ba570f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32missue_1329[m[33m, [m[1;31morigin/issue_1329[m[33m)[m
+Author: Hari Krishna <hari.100.hks@outlook.com>
+Date:   Sat Feb 24 11:58:03 2024 +0000
+
+    removed unused variable
+
+[33mcommit 538da7fd3d2c9b1fbe3c3a0c38a72cd02cd37bfa[m
+Author: Hari Krishna <hari.100.hks@outlook.com>
+Date:   Sat Feb 24 11:20:10 2024 +0000
+
+    fixed the issue with shared reference of the conditionValue object across components, causing changes made in one component to affect the other
+
+[33mcommit 12d96afbbb85f833c4cb5c68d413fca5a16d9df3[m
+Author: Hari Krishna <hari.100.hks@outlook.com>
+Date:   Fri Feb 23 09:46:38 2024 +0000
+
+    fixing cancel button issue
+
+[33mcommit 906333d8a2dea3d8a2d486c3b20803edf001c059[m[33m ([m[1;31morigin/1.4.0[m[33m, [m[1;32m1.4.0[m[33m)[m
+Author: Hari Krishna <hari.100.hks@outlook.com>
+Date:   Thu Feb 15 07:40:46 2024 +0000
+
+    fixed overflow in conditions
+
+[33mcommit bf776409bdf869e4130c0e7d7f9e57324922dc71[m[33m ([m[1;31mupstream/1.4.0[m[33m)[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Feb 8 00:23:30 2024 +0100
+
+    Added basic image distribution on app rebuild to be sent to orborus and handled
+
+[33mcommit 0a349019abb2f53059cb2d5ad0e19bcb2e8833ee[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Wed Feb 7 18:46:19 2024 +0100
+
+    Changed app sdk order for apps
+
+[33mcommit 8c640cbfd1e082bee8c26dfc712a6a2816e0959c[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Mon Feb 5 23:47:05 2024 +0100
+
+    Loads of frontend fixes
+
+[33mcommit cb9be52245a327b50a95af5e9c51e07a9b5c6033[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Fri Feb 2 01:54:18 2024 +0100
+
+    Fixed recursion bug where items that used to become empty strings became full values
+
+[33mcommit 8cb9e2eb8e18d407c6c9d931a5ca1a7bf8d0716a[m
+Merge: 7dbb1a8b 0e8fdd90
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Feb 1 14:34:33 2024 +0100
+
+    Merge branch '1.4.0' of https://github.com/shuffle/shuffle into 1.4.0
+
+[33mcommit 7dbb1a8b149e9348bb927e8e283f3f2108377e5b[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Feb 1 14:34:29 2024 +0100
+
+    Force rebuidl
+
+[33mcommit 0e8fdd9027bfdd57a525c57eefe695b0fc259ee2[m
+Author: Frikky <fredrik_9490@hotmail.com>
+Date:   Thu Feb 1 14:34:03 2024 +0100
+
+    Rerolled to nightly
+
+[33mcommit 3628812ff659a48190b4bc694f0d1ec441b39396[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Feb 1 14:32:31 2024 +0100
+
+    Fixed api calls not following PROXY guidelines: https://github.com/Shuffle/Shuffle/issues/1318
+
+[33mcommit 625561f76322ba434dce5de81a12b5a3bcdd5c47[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Feb 1 14:25:26 2024 +0100
+
+    Orborus update for swarm (?)
+
+[33mcommit d72f7dacc8f2e53ae79295210a737bca7e2a7b4e[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Feb 1 01:47:59 2024 +0100
+
+    Fixed a base image name problem to be only shuffle instead of frikky/shuffle
+
+[33mcommit 7cfb41df69ff58648ba1dfcdcfd1c48f67905383[m
+Merge: 95c92509 989dc2aa
+Author: Frikky <frikky@shuffler.io>
+Date:   Wed Jan 31 17:44:39 2024 +0100
+
+    Merge branch '1.4.0' of https://github.com/shuffle/shuffle into 1.4.0
+
+[33mcommit 95c925095b43e3bc41a3d466c09970cf136d7c22[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Wed Jan 31 17:44:36 2024 +0100
+
+    Fixed execution_id redirects in workflow
+
+[33mcommit 0c20b053f164823d797a6e69fe791557492b8d46[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Wed Jan 31 11:28:02 2024 +0100
+
+    Baseimagename update
+
+[33mcommit 989dc2aaf42415d407a6090741bb24725cd06d7b[m
+Merge: f8bbfb0f 001fa395
+Author: Frikky <fredrik_9490@hotmail.com>
+Date:   Wed Jan 31 10:57:29 2024 +0100
+
+    Merge branch 'main' into 1.4.0
+
+[33mcommit f8bbfb0fdb0f38294c89fc9867bd664ddbd9c19d[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Wed Jan 31 10:54:56 2024 +0100
+
+    Fixed execution mapping problems in workflows for 1.3.2
+
+[33mcommit 42e5c7822adffbd1598d66c9f58bb0ae31d185aa[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Tue Jan 30 01:37:46 2024 +0100
+
+    Fixed cache frontend issues related to editing/viewing
+
+[33mcommit 5421a35c57bda5a3474484996275e955025fd5e9[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Tue Jan 30 01:37:36 2024 +0100
+
+    Fixed Orborus/Worker related problems with image mapping
+
+[33mcommit a80d88b53f1451e29d058d34cce6e840f11f7481[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Fri Jan 26 15:16:52 2024 +0100
+
+    Splitcnt missing in production app for . value catching
+
+[33mcommit f2c47405f019e244221f416fb4646d493cff8408[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Fri Jan 26 15:13:12 2024 +0100
+
+    Added a recursion test script for dot notation handling that works with e.g. kibana
+
+[33mcommit b796eba7b2f5bb483cf7e8124317283d2c48834c[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Fri Jan 26 11:45:14 2024 +0100
+
+    Fixed cache view UI, minor theme bug and an SDK loading problem
+
+[33mcommit 57b7440b46a5a0ee9f6d10a17ee4f31d3fc61baf[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Jan 25 21:03:10 2024 +0100
+
+    Minor workflow UI fix
+
+[33mcommit d6f9c7b6b3f18f870960a5d17e6ca5e712e210ca[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Jan 25 20:13:45 2024 +0100
+
+    Made logo show up, and fixed notification loading problems onprem
+
+[33mcommit 7a09037604991ee75d7dc27f91cea6af73d72772[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Jan 25 14:56:52 2024 +0100
+
+    Made it so wait for results does what it should for loops on cloud
+
+[33mcommit 7a6970e3d60afeddad93bcd55b472cf8c360dfb9[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Jan 25 12:05:25 2024 +0100
+
+    Made MAX EXECUTION DEPTH be followed for further recursion than 10
+
+[33mcommit f10e382565793b094eded864c4acdb84ff6c26f7[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Thu Jan 25 12:03:45 2024 +0100
+
+    Made user re-invite to an org work even when user exists
+
+[33mcommit b82b68c8b240377a6192bef6cdfac50802f0c166[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Wed Jan 24 12:06:48 2024 +0100
+
+    https://github.com/Shuffle/Shuffle/issues/1306: Fixed int casting issue in app sdk during list management
+
+[33mcommit 98bf24d51eabed19a727c4c644b53f8e14c0debb[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Wed Jan 24 11:09:00 2024 +0100
+
+    Fixed an integer mapping problem in conditions
+
+[33mcommit 729b2b211d33a90b1844ff8d1f54857c9bfba2a6[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Tue Jan 23 16:12:58 2024 +0100
+
+    Added SHUFFLE_MAX_EXECUTION_DEPTH for subflows to be able to go lower than 10 subflows
+
+[33mcommit 2fec9306a3fadbab5e5e0c7a5be6fd300c16b7e1[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Tue Jan 23 01:33:57 2024 +0100
+
+    Last push for 1.3.2
+
+[33mcommit eabd5ade54965496d6519fd1563c64b6e9b884ba[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Tue Jan 23 01:32:42 2024 +0100
+
+    Upgrade worker details
+
+[33mcommit c6df1ef8cca511ac43488d0555289b06f339a070[m
+Merge: c220d9c4 3e9bdcf0
+Author: Frikky <frikky@shuffler.io>
+Date:   Tue Jan 23 01:32:16 2024 +0100
+
+    Merge branch '1.4.0' of https://github.com/shuffle/shuffle into 1.4.0
+
+[33mcommit c220d9c4a5ccbcf1780ff882923b037f5ef2e46d[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Tue Jan 23 01:30:11 2024 +0100
+
+    Minor fixes for queue management onprem
+
+[33mcommit 3e9bdcf05b9e701d02f96c1b99ecc43a07864722[m
+Author: Frikky <fredrik_9490@hotmail.com>
+Date:   Mon Jan 22 18:13:33 2024 +0100
+
+    Update package.json
+
+[33mcommit 990ba015fd3a52a30ef5415dac31bf9871fb7d2f[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Mon Jan 22 02:24:05 2024 +0100
+
+    Builds with new release info
+
+[33mcommit 19135a055119fb8a9fb1e810a13dbff0e52babb7[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Sun Jan 21 23:58:30 2024 +0100
+
+    User Input worker fix
+
+[33mcommit fb9cab4ec05155d4c4f3dd90b78e552a7f675fb9[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Sun Jan 21 23:57:39 2024 +0100
+
+    Fixed further user input problems
+
+[33mcommit f7c0c6e5e4a2e08f0eaff3d3b4da8efb506465f3[m
+Author: Frikky <frikky@shuffler.io>
+Date:   Sun Jan 21 22:11:10 2024 +0100
+
+    Added more management tools for workflow running and stat management
+
+[33mcommit a08c9c0bf33dee39e3a37e10c29d71f9939c12af[m
+Author: Frikky <frikky

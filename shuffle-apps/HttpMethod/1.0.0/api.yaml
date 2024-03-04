@@ -1,0 +1,85 @@
+walkoff_version: 1.4.0
+app_version: 1.0.0
+name: HttpMethod
+description: HTTP app 
+tags:
+  - Testing 
+  - HTTP
+categories:
+  - Other 
+  - HTTP
+contact_info:
+  name: "@hari krishna"
+  url: https://github.com/satti-hari-krishna-reddy
+  email: "hari@shuffler.io"
+actions:
+  - name: http_method
+    description: add a new endpoint for your app
+    parameters:
+      - name: method 
+        description: The http method
+        multiline: false
+        example: "GET , POST "
+        required: true
+        schema:
+          type: string
+      - name: headers 
+        description: Headers to use 
+        multiline: true 
+        required: true
+        example: "Content-Type:application/json"
+        schema:
+          type: string
+      - name: base_url 
+        description: the base part of your url 
+        multiline: false 
+        required: true
+        example: "https://api.example.com"
+        schema:
+          type: string
+      - name: path 
+        description: the path to add to the base url 
+        multiline: false
+        required: false 
+        example: "books/add"
+        schema:
+          type: string
+      - name: username
+        description: username for basic auth 
+        multiline: false
+        required: false 
+        example:  example_99
+        schema:
+          type: string
+      - name: password
+        description: password for the basic auth
+        multiline: false
+        required: false 
+        example: "******"
+        schema:
+          type: string
+      - name: verify
+        description: ""
+        multiline: false
+        required: false 
+        example: "True"
+        schema:
+          type: string
+      - name: queries 
+        description: queries in the url 
+        multiline: true 
+        required: false 
+        example: '{ "id": "1"}'
+        schema:
+          type: string
+      - name: req_body 
+        description: request body
+        multiline: true 
+        required: false 
+        example: '{ "key1": "value1", "key2": "value2" }'
+        schema:
+          type: string
+    returns:
+      schema:
+        type: string
+      example: "404 NOT FOUND"
