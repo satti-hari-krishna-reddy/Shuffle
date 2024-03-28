@@ -192,6 +192,7 @@ const Admin = (props) => {
   const [showApiKey, setShowApiKey] = useState(false);
   const [billingInfo, setBillingInfo] = React.useState({});
   const [selectedStatus, setSelectedStatus] = React.useState([]);
+  const [webHooks, setWebHooks] = React.useState([]);
 
   const [, forceUpdate] = React.useState();
 
@@ -230,7 +231,10 @@ const Admin = (props) => {
     }
     else console.log("error in user data")
   }, [userdata]); 
-  
+
+  useEffect(() => {
+     handleGetAllTriggers()
+  }, []); 
 
   const isCloud = window.location.host === "localhost:3002" || window.location.host === "shuffler.io";
 
@@ -560,6 +564,30 @@ If you're interested, please let me know a time that works for you, or set up a 
       });
   };
 
+  const handleGetAllTriggers = () => {
+    fetch(globalUrl + "/api/v1/triggers", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.status !== 200) {
+          console.log("Status not 200 for getting all triggers");
+        }
+
+        return response.json();
+      })
+      .then((responseJson) => {
+        setWebHooks(responseJson.webhooks || []); // Handling the case where the result is null or undefined
+      })
+      .catch((error) => {
+        toast(error.toString());
+      });
+  }
+
   const deleteSchedule = (data) => {
     // FIXME - add some check here ROFL
     console.log("INPUT: ", data);
@@ -597,6 +625,42 @@ If you're interested, please let me know a time that works for you, or set up a 
       });
   };
 
+  const deleteWebhook = (triggerId) => {
+    if (triggerId === undefined) {
+      return;
+    }
+
+    fetch(globalUrl + "/api/v1/hooks/" + triggerId + "/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.status !== 200) {
+          console.log("Status not 200 for stream results :O!");
+        }
+
+        return response.json();
+      })
+      .then((responseJson) => {
+
+        if (responseJson.success) {
+          setTimeout(() => {
+            handleGetAllTriggers();
+          }, 1500);
+        } else {
+          if (responseJson.reason !== undefined) {
+            toast("Failed stopping webhook: " + responseJson.reason);
+          }
+        }
+      })
+      .catch((error) => {
+        toast("Delete webhook error. Contact support or check logs if this persists.")
+      });
+  };
 
 	if (userdata.support === true && selectedOrganization.id !== "" && selectedOrganization.id !== undefined && selectedOrganization.id !== null && selectedOrganization.id !== userdata.active_org.id) {
 		toast("Refreshing window to fix org support access")
@@ -3922,7 +3986,7 @@ If you're interested, please let me know a time that works for you, or set up a 
 			selectedOrganization={selectedOrganization}
 		/>
 
-  const schedulesView =
+    const schedulesView =
     curTab === 5 ? (
       <div>
         <div style={{ marginTop: 20, marginBottom: 20 }}>
@@ -3931,7 +3995,7 @@ If you're interested, please let me know a time that works for you, or set up a 
             Schedules used in Workflows. Makes locating and control easier.{" "}
             <a
               target="_blank"
-			  rel="noopener noreferrer"
+							rel="noopener noreferrer"
               href="/docs/organizations#schedules"
               style={{ textDecoration: "none", color: "#f85a3e" }}
             >
@@ -4025,6 +4089,142 @@ If you're interested, please let me know a time that works for you, or set up a 
                 );
               })}
         </List>
+
+        <div style={{ marginTop: 20, marginBottom: 20 }}>
+          <h2 style={{ display: "inline" }}>WebHooks</h2>
+        </div>
+
+        <Divider
+          style={{
+            marginTop: 20,
+            marginBottom: 20,
+            backgroundColor: theme.palette.inputColor,
+          }}
+        />
+
+       <List>
+          <ListItem>
+            <ListItemText
+              primary="Name"
+              style={{ maxWidth: 200, minWidth: 200 }}
+            />
+            <ListItemText
+              primary="Environment"
+              style={{ maxWidth: 150, minWidth: 150 }}
+            />
+            <ListItemText
+              primary="Workflow"
+              style={{ maxWidth: 315, minWidth: 315 }}
+            />
+            <ListItemText
+              primary="Url"
+              style={{ minWidth: 300, maxWidth: 300, overflow: "hidden" }}
+            />
+            <ListItemText primary="Actions" />
+            </ListItem>
+            {webHooks === undefined || webHooks === null
+            ? null
+            : webHooks.map((webhook, index) => {
+                var bgColor = "#27292d";
+                if (index % 2 === 0) {
+                  bgColor = "#1f2023";
+                }
+
+                return (
+                  <ListItem key={index} style={{ backgroundColor: bgColor }}>
+                    <ListItemText
+                      style={{ maxWidth: 200, minWidth: 200 }}
+                      primary={ webhook.trigger.label }
+                    />
+                    <ListItemText
+                      style={{ maxWidth: 150, minWidth: 150 }}
+                      primary={webhook.trigger.environment}
+                    />
+                    <ListItemText
+                      style={{ maxWidth: 315, minWidth: 315 }}
+                      primary={
+                        <a
+                          style={{ textDecoration: "none", color: "#f85a3e" }}
+                          href={`/workflows/${webhook.id}`}
+                          target="_blank"
+						  rel="noopener noreferrer"
+                        >
+                          {webhook.id}
+                        </a>
+                      }
+                    />
+
+<ListItemText
+                  style={{ marginLeft: 10, maxWidth: 100, minWidth: 100 }}
+                  primary={
+                    webhook.trigger.parameters[0].value === undefined ||
+                    webhook.trigger.parameters[0].value === 0 ? (
+                      ""
+                    ) : (
+                      <Tooltip
+                        title={"Copy URL"}
+                        style={{}}
+                        aria-label={"Copy URL"}
+                      >
+                        <IconButton
+                          style={{}}
+                          onClick={() => {
+                            const elementName = "copy_element_shuffle";
+                            var copyText =
+                              document.getElementById(elementName);
+                            if (
+                              copyText !== null &&
+                              copyText !== undefined
+                            ) {
+                              const clipboard = navigator.clipboard;
+                              if (clipboard === undefined) {
+                                toast(
+                                  "Can only copy over HTTPS (port 3443)"
+                                );
+                                return;
+                              }
+
+                              navigator.clipboard.writeText(webhook.trigger.parameters[0].value);
+                              copyText.select();
+                              copyText.setSelectionRange(
+                                0,
+                                99999
+                              ); /* For mobile devices */
+
+                              /* Copy the text inside the text field */
+                              document.execCommand("copy");
+
+                              toast("URL copied to clipboard");
+                            }
+                          }}
+                        >
+                          <FileCopyIcon
+                            style={{ color: "rgba(255,255,255,0.8)" }}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    )
+                  }
+                />
+                  <ListItemText
+                      style={{ maxWidth: 200, minWidth: 200, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      primary={ webhook.trigger.parameters[0].value }
+                    />
+                   
+                    <ListItemText>
+                      <Button
+                        style={{ marginLeft: 'auto' }}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => deleteWebhook(webhook.id)}
+                      >
+                        Stop Webhook
+                      </Button>
+                    </ListItemText>
+                  </ListItem>
+                );
+              })}       
+      </List>            
       </div>
     ) : null;
 
