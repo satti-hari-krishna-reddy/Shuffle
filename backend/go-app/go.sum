@@ -453,12 +453,12 @@ github.com/sashabaranov/go-openai v1.19.2 h1:+dkuCADSnwXV02YVJkdphY8XD9AyHLUWwk6
 github.com/sashabaranov/go-openai v1.19.2/go.mod h1:lj5b/K+zjTSFxVLijLSTDZuP7adOgerWeFyZLUhAKRg=
 github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
+github.com/satti-hari-krishna-reddy/shuffle-shared v0.0.0-20240416104150-a09df5909e63 h1:BdR+kr1UsrduzBUCtO0nS9gCGkUsLuHVHQQQlSR/eaA=
+github.com/satti-hari-krishna-reddy/shuffle-shared v0.0.0-20240416104150-a09df5909e63/go.mod h1:Lg6/+qjQlWzNKwj4/4ATpvScyP2JQGLkTPlNlRM6RJk=
 github.com/seccomp/libseccomp-golang v0.9.2-0.20220502022130-f33da4d89646/go.mod h1:JA8cRccbGaA1s33RQf7Y1+q9gHmZX1yB/z9WDN1C6fg=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
 github.com/sergi/go-diff v1.1.0 h1:we8PVUC3FE2uYfodKH/nBHMSetSfHDR6scGdBi+erh0=
 github.com/sergi/go-diff v1.1.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNXdaHfM=
-github.com/shuffle/shuffle-shared v0.6.2 h1:wcy7rc8QnF18uTsicG7L+9Ce1Ah/ol7Jc8t5nu9p9/Y=
-github.com/shuffle/shuffle-shared v0.6.2/go.mod h1:Lg6/+qjQlWzNKwj4/4ATpvScyP2JQGLkTPlNlRM6RJk=
 github.com/shurcooL/sanitized_anchor_name v1.0.0/go.mod h1:1NzhyTcUVG4SuEtjjoZeVRXNmyL/1OwPU0+IJeTBvfc=
 github.com/sirupsen/logrus v1.7.0/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
 github.com/sirupsen/logrus v1.8.1/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=

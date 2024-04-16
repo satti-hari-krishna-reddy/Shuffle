@@ -39,6 +39,8 @@ import (
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/swarm"
 
+	"github.com/docker/go-connections/nat"
+
 	//"github.com/docker/docker/api/types/filters"
 	dockerclient "github.com/docker/docker/client"
 	uuid "github.com/satori/go.uuid"
@@ -890,6 +892,12 @@ func stopWorker(containername string) error {
 
 func initializeImages() {
 	ctx := context.Background()
+
+	// err := deployTenzirNode()
+	// if err==nil {
+	// 	log.Printf("[INFO] Hurray !!!!!! it looks node is deployed check the same with docker ps command")
+	// }
+
 
 	if appSdkVersion == "" {
 		appSdkVersion = "latest"
@@ -1792,154 +1800,154 @@ func main() {
 }
 
 
-func deployPipeline(image, identifier, command string) error {
-	if isKubernetes == "true" {
-		return errors.New("Kubernetes not implemented")
-	}
+// func deployPipeline(image, identifier, command string) error {
+// 	if isKubernetes == "true" {
+// 		return errors.New("Kubernetes not implemented")
+// 	}
 
-	ctx := context.Background()
-	hostConfig := &container.HostConfig{
-		LogConfig: container.LogConfig{
-			Type: "json-file",
-			Config: map[string]string{
-				"max-size": "10m",
-			},
-		},
-		Resources: container.Resources{},
-	}
+// 	ctx := context.Background()
+// 	hostConfig := &container.HostConfig{
+// 		LogConfig: container.LogConfig{
+// 			Type: "json-file",
+// 			Config: map[string]string{
+// 				"max-size": "10m",
+// 			},
+// 		},
+// 		Resources: container.Resources{},
+// 	}
 
-	hostConfig.NetworkMode = container.NetworkMode(fmt.Sprintf("container:%s", containerId))
-	if strings.ToLower(cleanupEnv) != "false" {
-		hostConfig.AutoRemove = true
-	}
+// 	hostConfig.NetworkMode = container.NetworkMode(fmt.Sprintf("container:%s", containerId))
+// 	if strings.ToLower(cleanupEnv) != "false" {
+// 		hostConfig.AutoRemove = true
+// 	}
 
-	envVariables := []string{
-	}
-
-
-	// Add volume binds for storage
-	// Want read/write with full access for the container
-	//sourceFolder := "/Users/frikky/git/shuffle/shuffle-database"
-	//destinationFolder := "/tmp/storage"
-	//hostConfig.Mounts = append(hostConfig.Mounts, mount.Mount{
-	//	Type:   mount.TypeBind,
-	//	Source: sourceFolder,
-	//	Target: destinationFolder,
-	//})
-
-	// FIXME: Is using sigma "automatically" here good?
-	// Or is it better to run it as a separate workflow?
-	if strings.Contains(command, "sigma") {
-		log.Printf("[DEBUG] Should LOAD sigma from backend in realtime and dump it in a folder inside the container")
-
-		//sourceFolder := "/tmp/tenzir/sigma"
-		//sigmaFolder := "/tmp/tenzir/sigma"
-		//hostConfig.Mounts = append(hostConfig.Mounts, mount.Mount{
-		//	Type:   mount.TypeBind,
-		//	Source: sigmaFolder,
-		//	Target: sigmaFolder,
-		//}
-	}
-
-	config := &container.Config{
-		Image: image,
-		Env:   envVariables,
-		Cmd:   []string{
-			command,
-		},
-	}
-
-	// Add label to container in case of zombies
-	config.Labels = map[string]string{
-		"name":   identifier,
-		"shuffle": "shuffle",
-	}			
+// 	envVariables := []string{
+// 	}
 
 
-	cont, err := dockercli.ContainerCreate(
-		ctx,
-		config,
-		hostConfig,
-		nil,
-		nil,
-		identifier,
-	)
+// 	// Add volume binds for storage
+// 	// Want read/write with full access for the container
+// 	//sourceFolder := "/Users/frikky/git/shuffle/shuffle-database"
+// 	//destinationFolder := "/tmp/storage"
+// 	//hostConfig.Mounts = append(hostConfig.Mounts, mount.Mount{
+// 	//	Type:   mount.TypeBind,
+// 	//	Source: sourceFolder,
+// 	//	Target: destinationFolder,
+// 	//})
 
-	if err != nil {
-		if strings.Contains(fmt.Sprintf("%s", err), "Conflict. The container name ") {
-			log.Printf("[DEBUG] Pipeline Container %s already exists, removing it", identifier)
-		} else {
-			log.Printf("[ERROR] Failed to create pipeline container %s: %s", identifier, err)
-			return err
-		}
-	}
+// 	// FIXME: Is using sigma "automatically" here good?
+// 	// Or is it better to run it as a separate workflow?
+// 	if strings.Contains(command, "sigma") {
+// 		log.Printf("[DEBUG] Should LOAD sigma from backend in realtime and dump it in a folder inside the container")
 
-	containerStartOptions := types.ContainerStartOptions{}
-	err = dockercli.ContainerStart(
-		ctx, 
-		cont.ID, 
-		containerStartOptions,
-	)
-	if err != nil {
-		if strings.Contains(fmt.Sprintf("%s", err), "cannot join network") || strings.Contains(fmt.Sprintf("%s", err), "No such container") {
-			hostConfig.NetworkMode = ""
-			cont, err = dockercli.ContainerCreate(
-				ctx,
-				config,
-				hostConfig,
-				nil,
-				nil,
-				identifier+"-2",
-			)
-			if err != nil {
-				log.Printf("[ERROR] Failed to CREATE pipeline container (2): %s", err)
-			}
+// 		//sourceFolder := "/tmp/tenzir/sigma"
+// 		//sigmaFolder := "/tmp/tenzir/sigma"
+// 		//hostConfig.Mounts = append(hostConfig.Mounts, mount.Mount{
+// 		//	Type:   mount.TypeBind,
+// 		//	Source: sigmaFolder,
+// 		//	Target: sigmaFolder,
+// 		//}
+// 	}
 
-			err = dockercli.ContainerStart(
-				ctx, 
-				cont.ID, 
-				containerStartOptions,
-			)
-			if err != nil {
-				log.Printf("[ERROR] Failed to start pipeline container (2): %s", err)
-				return err
-			}
-		} else {
-			log.Printf("[ERROR] Failed initial pipeline container start. Quitting as this is NOT a simple network issue. Err: %s", err)
-		}
+// 	config := &container.Config{
+// 		Image: image,
+// 		Env:   envVariables,
+// 		Cmd:   []string{
+// 			command,
+// 		},
+// 	}
 
-		if err != nil {
-			log.Printf("[ERROR] Failed to start pipeline container in environment %s: %s", environment, err)
-			return err
-		} else {
-			log.Printf("[INFO] Pipeline Container created (1). Environment %s: docker logs %s", environment, cont.ID)
-		}
+// 	// Add label to container in case of zombies
+// 	config.Labels = map[string]string{
+// 		"name":   identifier,
+// 		"shuffle": "shuffle",
+// 	}			
 
-		stats, err := dockercli.ContainerInspect(ctx, cont.ID)
-		if err != nil {
-			log.Printf("[ERROR] Failed checking pipeline with containername '%s'", cont.ID)
-			return nil
-		}
 
-		containerStatus := stats.ContainerJSONBase.State.Status
-		log.Printf("[DEBUG] Status of pipeline '%s' is %s. Should be running. Will reset", containerName, containerStatus)
-	}
+// 	cont, err := dockercli.ContainerCreate(
+// 		ctx,
+// 		config,
+// 		hostConfig,
+// 		nil,
+// 		nil,
+// 		identifier,
+// 	)
 
-	// Wait for the container to finish
-	/*
-	statusCh, errCh := dockercli.ContainerWait(ctx, cont.ID, container.WaitConditionNotRunning)
-	select {
-	case err := <-errCh:
-		if err != nil {
-			log.Printf("[ERROR] Failed to wait for container: %s", err)
-		}
-	case <-statusCh:
-		log.Printf("[INFO] Container finished")
-	}
-	*/
+// 	if err != nil {
+// 		if strings.Contains(fmt.Sprintf("%s", err), "Conflict. The container name ") {
+// 			log.Printf("[DEBUG] Pipeline Container %s already exists, removing it", identifier)
+// 		} else {
+// 			log.Printf("[ERROR] Failed to create pipeline container %s: %s", identifier, err)
+// 			return err
+// 		}
+// 	}
 
-	return nil
-}
+// 	containerStartOptions := types.ContainerStartOptions{}
+// 	err = dockercli.ContainerStart(
+// 		ctx, 
+// 		cont.ID, 
+// 		containerStartOptions,
+// 	)
+// 	if err != nil {
+// 		if strings.Contains(fmt.Sprintf("%s", err), "cannot join network") || strings.Contains(fmt.Sprintf("%s", err), "No such container") {
+// 			hostConfig.NetworkMode = ""
+// 			cont, err = dockercli.ContainerCreate(
+// 				ctx,
+// 				config,
+// 				hostConfig,
+// 				nil,
+// 				nil,
+// 				identifier+"-2",
+// 			)
+// 			if err != nil {
+// 				log.Printf("[ERROR] Failed to CREATE pipeline container (2): %s", err)
+// 			}
+
+// 			err = dockercli.ContainerStart(
+// 				ctx, 
+// 				cont.ID, 
+// 				containerStartOptions,
+// 			)
+// 			if err != nil {
+// 				log.Printf("[ERROR] Failed to start pipeline container (2): %s", err)
+// 				return err
+// 			}
+// 		} else {
+// 			log.Printf("[ERROR] Failed initial pipeline container start. Quitting as this is NOT a simple network issue. Err: %s", err)
+// 		}
+
+// 		if err != nil {
+// 			log.Printf("[ERROR] Failed to start pipeline container in environment %s: %s", environment, err)
+// 			return err
+// 		} else {
+// 			log.Printf("[INFO] Pipeline Container created (1). Environment %s: docker logs %s", environment, cont.ID)
+// 		}
+
+// 		stats, err := dockercli.ContainerInspect(ctx, cont.ID)
+// 		if err != nil {
+// 			log.Printf("[ERROR] Failed checking pipeline with containername '%s'", cont.ID)
+// 			return nil
+// 		}
+
+// 		containerStatus := stats.ContainerJSONBase.State.Status
+// 		log.Printf("[DEBUG] Status of pipeline '%s' is %s. Should be running. Will reset", containerName, containerStatus)
+// 	}
+
+// 	// Wait for the container to finish
+// 	/*
+// 	statusCh, errCh := dockercli.ContainerWait(ctx, cont.ID, container.WaitConditionNotRunning)
+// 	select {
+// 	case err := <-errCh:
+// 		if err != nil {
+// 			log.Printf("[ERROR] Failed to wait for container: %s", err)
+// 		}
+// 	case <-statusCh:
+// 		log.Printf("[INFO] Container finished")
+// 	}
+// 	*/
+
+// 	return nil
+// }
 
 // Tenzir command samples
 // docker pull ghcr.io/dominiklohmann/tenzir-arm64:latest
@@ -1954,18 +1962,23 @@ func handlePipeline(incRequest shuffle.ExecutionRequest) error {
 		return errors.New("No execution argument found for pipeline create. Skipping")
 	}
 
-	image := "tenzir/tenzir:latest"
+	//image := "tenzir/tenzir:latest"
 	identifier := fmt.Sprintf("shuffle-%s", strings.ToLower(strings.ReplaceAll(incRequest.ExecutionSource, " ", "-")))
 	command := incRequest.ExecutionArgument
 
 	if incRequest.Type == "PIPELINE_CREATE" {
 		log.Printf("[INFO] Should delete -> recreate new pipeline %#v. Name: %#v", incRequest.ExecutionArgument, identifier)
-		err := deployPipeline(image, identifier, command)
+		//err := deployPipeline(image, identifier, command)
+		pipeId, err := createPipeline(command, identifier)
 		if err != nil {
 			log.Printf("[ERROR] Failed to deploy pipeline: %s", err)
 			return err
 		} else {
-			log.Printf("[INFO] Pipeline deployed successfully")
+			log.Printf("[INFO] Pipeline deployed successfully with Id: %s", pipeId)
+			 newErr := savePipelineData(pipeId)
+			 if newErr != nil {
+				log.Printf("[DEBUG] failed to save the pipeline data: %s", newErr)
+			 }
 		}
 	} else if incRequest.Type == "PIPELINE_DELETE" {
 		log.Printf("[INFO] Should delete pipeline %#v", incRequest.ExecutionArgument)
@@ -1976,6 +1989,148 @@ func handlePipeline(incRequest shuffle.ExecutionRequest) error {
 		return errors.New("Unknown type for pipeline")
 	}
 
+
+	return nil
+}
+
+func deployTenzirNode() error {
+
+	ctx := context.Background()
+
+	healthconfig := &container.HealthConfig{
+		Test: []string{"tenzir --connection-timeout=30s --connection-retry-delay=1s 'api /ping'"},
+		Interval: 30 * time.Second,
+		Retries:  1,
+	}
+
+	config := &container.Config{
+		Cmd: []string{"--commands=web server --mode=dev --bind=0.0.0.0"},
+		Image:        "tenzir/tenzir:latest",
+		Healthcheck:  healthconfig,
+		ExposedPorts: nat.PortSet{"5160/tcp": struct{}{}},
+		Entrypoint: []string{"tenzir-node"},
+	}
+
+	hostConfig := &container.HostConfig{
+		PortBindings: nat.PortMap{
+			"5160/tcp": []nat.PortBinding{{HostPort: "5160"}},
+		},
+		Mounts: []mount.Mount{
+			{
+				Type:   mount.TypeVolume,
+				Source: "tenzir-node",
+				Target: "/var/lib/tenzir/",
+			},
+		},
+		LogConfig: container.LogConfig{
+			Type: "json-file",
+			Config: map[string]string{
+				"max-size": "10m",
+			},
+		},
+		VolumeDriver: "local",
+	}
+
+	resp, err := dockercli.ContainerCreate(ctx, config, hostConfig, nil, nil, "tenzir-node")
+	if err != nil {
+		if strings.Contains(fmt.Sprintf("%s", err), "Conflict. The container name ") {
+			log.Printf("[DEBUG] Tenzir Node Container already exists, starting it")
+		} else {
+			log.Printf("[ERROR] failed to create Tenzir Node: %v", err)
+			return err
+		}
+	}
+
+	err = dockercli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{})
+
+	if err != nil {
+		log.Printf("[ERROR] failed to start container: %v", err)
+		return err
+	}
+
+	log.Printf("[INFO] Started the tenzir node: %s", resp.ID)
+	return nil
+}
+
+func createPipeline(command, identifier string) (string, error){
+
+	requestBody := map[string]interface{}{
+        "definition": command,
+        "name":       identifier,
+        "hidden":     false,
+        "autostart": map[string]bool{
+            "completed": false,
+            "failed":    true,
+            "stopped":   false,
+        },
+    }
+
+    requestBodyJSON, err := json.Marshal(requestBody)
+    if err != nil {
+        log.Println("[ERROR] failed marshalling request body:", err)
+        return "", err
+    }
+
+    resp, err := http.Post("http://localhost:5160/api/v0/pipeline/create", "application/json", bytes.NewBuffer(requestBodyJSON))
+    if err != nil {
+        log.Printf("[ERROR] failed to create pipeline: %s", err)
+        return "", err
+    }
+    defer resp.Body.Close()
+
+    var response map[string]interface{}
+    if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+        log.Printf("[ERROR] decoding response: %s", err)
+        return "", err
+    }
+	id, ok := response["id"].(string)
+	if  !ok {
+		log.Printf("[DEBUG]: ID not found in response")
+		return "", errors.New("pipeline ID not found in the response")		
+    } 
+
+	return id, nil
+}
+
+//func deletePipeline() {}
+
+func savePipelineData(pipelineId string) error {
+
+	fullUrl := fmt.Sprintf("%s/api/v1/triggers/pipeline/save", baseUrl)
+	forwardMethod := "PUT"
+	payload := map[string]string{"pipeline_id": pipelineId}
+
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		log.Printf("[ERROR] Failed to marshal payload: %s", err)
+		return err
+	}
+
+	forwardData := bytes.NewBuffer(payloadBytes)
+
+	req, err := http.NewRequest(
+		forwardMethod,
+		fullUrl,
+		forwardData,
+	)
+	if err != nil {
+		log.Printf("[ERROR] Failed to create HTTP request: %s", err)
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("[ERROR] Failed to send HTTP request: %s", err)
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		log.Printf("[ERROR] Received non-successful HTTP status code: %d", resp.StatusCode)
+		return fmt.Errorf("unexpected HTTP status code: %d", resp.StatusCode)
+	}
 
 	return nil
 }

@@ -57,7 +57,7 @@ if (window.location.port === "3000") {
 // Development on Github Codespaces
 if (globalUrl.includes("app.github.dev")) {
 	//globalUrl = globalUrl.replace("3000", "5001")
-	globalUrl = "https://frikky-shuffle-5gvr4xx62w64-5001.preview.app.github.dev"
+	globalUrl = "https://fuzzy-potato-wr796q6q454qfv6jx-5001.app.github.dev"
 }
 //console.log("global: ", globalUrl)
 
@@ -69,6 +69,7 @@ const App = (message, props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [dataset, setDataset] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [workflows, setWorkflows] = React.useState([]);
   const [curpath, setCurpath] = useState(typeof window === "undefined" || window.location === undefined ? "" : window.location.pathname)
 
 
@@ -241,6 +242,7 @@ const App = (message, props) => {
         	      cookies={cookies}
         	      checkLogin={checkLogin}
 				  notifications={notifications}
+				  workflows={workflows}
         	      {...props}
         	    />
         	  }
@@ -258,6 +260,7 @@ const App = (message, props) => {
         	      globalUrl={globalUrl}
         	      setCookie={setCookie}
         	      cookies={cookies}
+				  workflows={workflows}
         	      {...props}
         	    />
         	  }
@@ -415,6 +418,8 @@ const App = (message, props) => {
         	      globalUrl={globalUrl}
         	      isLoaded={isLoaded}
         	      isLoggedIn={isLoggedIn}
+				  workflows={workflows}
+				  setWorkflows={setWorkflows}
         	      {...props}
         	    />
         	  }

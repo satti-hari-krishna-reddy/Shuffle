@@ -397,7 +397,7 @@ const svgSize = 24;
 
 const searchClient = algoliasearch("JNSS5CFDZZ", "db08e40265e2941b9a7d8f644b6e5240")
 const AngularWorkflow = (defaultprops) => {
-  const { globalUrl, isLoggedIn, isLoaded, userdata, data_id } = defaultprops;
+  const { globalUrl, isLoggedIn, isLoaded, userdata, data_id, workflows, setWorkflows } = defaultprops;
   const referenceUrl = globalUrl + "/api/v1/hooks/";
   //const alert = useAlert()
   let navigate = useNavigate();
@@ -416,7 +416,6 @@ const AngularWorkflow = (defaultprops) => {
   const [currentView, setCurrentView] = React.useState(0);
   const [triggerAuthentication, setTriggerAuthentication] = React.useState({});
   const [triggerFolders, setTriggerFolders] = React.useState([]);
-  const [workflows, setWorkflows] = React.useState([]);
   const [parentWorkflows, setParentWorkflows] = React.useState([]);
   const [showEnvironment, setShowEnvironment] = React.useState(false);
   const [editWorkflowDetails, setEditWorkflowDetails] = React.useState(false);
@@ -7604,7 +7603,7 @@ const AngularWorkflow = (defaultprops) => {
 
 			if (trigger.trigger_type === "PIPELINE") {
 				if (userdata.support !== true) {
-					return null
+					//return null
 				} 
 			}
 
@@ -13439,7 +13438,7 @@ const AngularWorkflow = (defaultprops) => {
     return null
   }
 
-  const PipelineSidebar = Object.getOwnPropertyNames(selectedTrigger).length === 0 || workflow.triggers[selectedTriggerIndex] === undefined && selectedTrigger.trigger_type !== "SCHEDULE" ? null : !userdata.support === true ? null : 
+  const PipelineSidebar = Object.getOwnPropertyNames(selectedTrigger).length === 0 || workflow.triggers[selectedTriggerIndex] === undefined && selectedTrigger.trigger_type !== "SCHEDULE" ? null : 
         <div style={appApiViewStyle}>
 		  <h3 style={{ marginBottom: "5px" }}>
 			{selectedTrigger.app_name}: {selectedTrigger.status}
@@ -13572,6 +13571,8 @@ const AngularWorkflow = (defaultprops) => {
 						"type": "create",
 						"command": "load tcp://0.0.0.0:514 | read syslog | export",
 						"environment": selectedTrigger.environment,
+            "workflow_id" : "put workflow here",
+            "trigger_id" : selectedTrigger.id,
 					}
 
                     submitPipeline(selectedTrigger, selectedTriggerIndex, pipelineConfig)
@@ -13595,6 +13596,8 @@ const AngularWorkflow = (defaultprops) => {
 						"type": "create",
 						"command": "export --live | sigma /path/to/rules | to http://192.168.86.44:5002/api/v1/hooks/webhook_665ace5f-f27b-496a-a365-6e07eb61078c write lines",
 						"environment": selectedTrigger.environment,
+            "workflow_id" : "put workflow here",
+            "trigger_id" : selectedTrigger.id,
 					}
 
                     submitPipeline(selectedTrigger, selectedTriggerIndex, pipelineConfig)
@@ -13618,6 +13621,8 @@ const AngularWorkflow = (defaultprops) => {
 						"type": "create",
 						"command": "from kafka://1.2.3.4 --topic foo | to http://api.com X-Token:Secret",
 						"environment": selectedTrigger.environment,
+            "workflow_id" : "put workflow here",
+            "trigger_id" : selectedTrigger.id,
 					}
 
                     submitPipeline(selectedTrigger, selectedTriggerIndex, pipelineConfig)
@@ -14937,8 +14942,8 @@ const AngularWorkflow = (defaultprops) => {
         defaultReturn = null
       } else if (selectedTrigger.trigger_type === "SUBFLOW") {
 		defaultReturn = <SubflowSidebar />
-	  //  } else if (selectedTrigger.trigger_type === "PIPELINE") {
-	  //	defaultReturn = <PipelineSidebar />
+	    //} else if (selectedTrigger.trigger_type === "PIPELINE") {
+	  	//defaultReturn = <PipelineSidebar />
       } else if (selectedTrigger.trigger_type === "EMAIL") {
         defaultReturn = <EmailSidebar />
       } else if (selectedTrigger.trigger_type === "USERINPUT") {

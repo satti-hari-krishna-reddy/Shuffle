@@ -135,7 +135,7 @@ const FileCategoryInput = (props) => {
 
 
 const Admin = (props) => {
-  const { globalUrl, userdata, serverside, checkLogin, notifications, setNotifications,  } = props;
+  const { globalUrl, userdata, serverside, checkLogin, notifications, setNotifications, workflows  } = props;
 
   var to_be_copied = "";
   const classes = useStyles();
@@ -625,7 +625,7 @@ If you're interested, please let me know a time that works for you, or set up a 
       });
   };
 
-  const deleteWebhook = (triggerId) => {
+  const deleteWebhook = (triggerId, workflowId) => {
     if (triggerId === undefined) {
       return;
     }
@@ -648,9 +648,7 @@ If you're interested, please let me know a time that works for you, or set up a 
       .then((responseJson) => {
 
         if (responseJson.success) {
-          setTimeout(() => {
-            handleGetAllTriggers();
-          }, 1500);
+          updateTriggerStatus(triggerId, workflowId);
         } else {
           if (responseJson.reason !== undefined) {
             toast("Failed stopping webhook: " + responseJson.reason);
@@ -661,6 +659,67 @@ If you're interested, please let me know a time that works for you, or set up a 
         toast("Delete webhook error. Contact support or check logs if this persists.")
       });
   };
+  const updateTriggerStatus = (triggerId, workflowId) => {
+    // Check if workflows array is empty
+    if (!workflows || workflows.length === 0) {
+      toast("Something went wrong. Workflows not available.");
+      return;
+    }
+  
+    // Find the workflow with the specified ID
+    const workflow = workflows.find(a => a.id === workflowId);
+  
+    // Check if workflow with the specified ID exists and has triggers
+    if (!workflow || !workflow.triggers || workflow.triggers.length === 0) {
+      toast("Workflow or triggers not found.");
+      return;
+    }
+  
+    // Find the index of the trigger with the specified ID
+    const triggerIndex = workflow.triggers.findIndex(b => b.id === triggerId);
+  
+    // Check if trigger with the specified ID exists
+    if (triggerIndex === -1) {
+      toast("Trigger not found.");
+      return;
+    }
+  
+    // Update the status of the trigger to "stopped"
+    workflow.triggers[triggerIndex].status = "stopped";
+  
+    // Send PUT request to update the workflow
+    fetch(`${globalUrl}/api/v1/workflows/${workflowId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(workflow),
+      credentials: "include",
+    })
+      .then(response => {
+        if (response.status !== 200) {
+          console.log("Status not 200 for setting workflows :O!");
+        }
+        return response.json();
+      })
+      .then(responseJson => {
+        if (responseJson.success) {
+          setTimeout(() => {
+            handleGetAllTriggers();
+          }, 1500);
+        } else {
+          console.log(responseJson);
+          const errorMessage = responseJson.reason || "Failed to save. Please contact support@shuffler.io or your local admin.";
+          toast("Failed to save: " + errorMessage);
+        }
+      })
+      .catch(error => {
+        console.log("Save workflow error: ", error.toString());
+        toast("Failed to save. Please contact support@shuffler.io or your local admin.");
+      });
+  };
+  
 
 	if (userdata.support === true && selectedOrganization.id !== "" && selectedOrganization.id !== undefined && selectedOrganization.id !== null && selectedOrganization.id !== userdata.active_org.id) {
 		toast("Refreshing window to fix org support access")
@@ -4216,7 +4275,7 @@ If you're interested, please let me know a time that works for you, or set up a 
                         style={{ marginLeft: 'auto' }}
                         variant="contained"
                         color="primary"
-                        onClick={() => deleteWebhook(webhook.id)}
+                        onClick={() => deleteWebhook(webhook.trigger.id, webhook.id)}
                       >
                         Stop Webhook
                       </Button>
@@ -4224,7 +4283,30 @@ If you're interested, please let me know a time that works for you, or set up a 
                   </ListItem>
                 );
               })}       
-      </List>            
+      </List> 
+
+              <div style={{ marginTop: 20, marginBottom: 20 }}>
+          <h2 style={{ display: "inline" }}>Tenzir Pipelines</h2>
+          <span style={{ marginLeft: 25 }}>
+            Controls a pipeline to run things.{" "}
+            <a
+              target="_blank"
+							rel="noopener noreferrer"
+              href="/docs/triggers#pipelines"
+              style={{ textDecoration: "none", color: "#f85a3e" }}
+            >
+              Learn more
+            </a>
+          </span>
+        </div>
+
+        <Divider
+          style={{
+            marginTop: 20,
+            marginBottom: 20,
+            backgroundColor: theme.palette.inputColor,
+          }}
+        />           
       </div>
     ) : null;
 

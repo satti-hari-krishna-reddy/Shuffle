@@ -1,0 +1,20 @@
+  # docker-compose.yaml
+services:
+  tenzir-node:
+    image: ${TENZIR_IMAGE:-tenzir/tenzir:latest}
+    ports:
+      - 5160:5160
+    entrypoint:
+      - tenzir-node
+    command:
+      - --commands=web server --mode=dev --bind=0.0.0.0
+    volumes:
+      - tenzir-node:/var/lib/tenzir/
+    healthcheck:
+      test: tenzir --connection-timeout=30s --connection-retry-delay=1s 'api /ping'
+      interval: 30s
+      retries: 1
+
+volumes:
+  tenzir-node:
+    driver: local
