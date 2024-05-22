@@ -766,7 +766,7 @@ If you're interested, please let me know a time that works for you, or set up a 
       .then((responseJson) => {
         setWebHooks(responseJson.webhooks || []); // Handling the case where the result is null or undefined
         setAllSchedules(responseJson.schedules || []);
-        // setPipelines(responseJson.pipelines || []);
+        setPipelines(responseJson.pipelines || []);
       })
       .catch((error) => {
         // toast(error.toString());
@@ -951,11 +951,13 @@ If you're interested, please let me know a time that works for you, or set up a 
     }
   
     const data = {
+      command: pipeline.command,
       name: pipeline.name,
       type: state,
       environment: pipeline.environment,
       workflow_id: pipeline.workflow_id,
       trigger_id: pipeline.trigger_id,
+      start_node: pipeline.start_node,
     };
   
     if (state === "start") toast("starting the pipeline");
@@ -986,6 +988,7 @@ If you're interested, please let me know a time that works for you, or set up a 
           if (state === "start") toast("Successfully created pipeline");
           else toast("Sucessfully stopped the pipeline");
         }
+        setTimeout(handleGetAllTriggers, 1000);
       })
       .catch((error) => {
         //toast(error.toString());
@@ -4858,7 +4861,7 @@ If you're interested, please let me know a time that works for you, or set up a 
   
                   <ListItemText>
                     <Button
-                      style={{ marginLeft: "18%" }}
+                      style={{ marginLeft: "140px" }}
                       variant={
                         webhook.status === "running" ? "contained" : "outlined"
                       }
@@ -4880,10 +4883,10 @@ If you're interested, please let me know a time that works for you, or set up a 
           </List>
         )}
   
-        {/* <div style={{ marginTop: 20, marginBottom: 20 }}>
+        <div style={{ marginTop: 20, marginBottom: 20 }}>
           <h2 style={{ display: "inline" }}>Tenzir Pipelines</h2>
           <span style={{ marginLeft: 25 }}>
-            Controls a pipeline to run things.{" "}
+             Controls the Tenzir pipeline operations.{" "}
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -4930,7 +4933,7 @@ If you're interested, please let me know a time that works for you, or set up a 
                 primary="Workflow"
                 style={{ maxWidth: 315, minWidth: 315 }}
               />
-              <ListItemText primary="Actions" />
+            <ListItemText primary="Actions" style={{ marginLeft: '120px' }} />
             </ListItem>
             {pipelines.map((pipeline, index) => {
               var bgColor = "#27292d";
@@ -4983,7 +4986,7 @@ If you're interested, please let me know a time that works for you, or set up a 
               );
             })}
           </List>
-        )}*/}
+        )}
       </div>
     ) : null;
 
