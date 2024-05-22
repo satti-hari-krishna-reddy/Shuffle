@@ -7849,7 +7849,7 @@ const AngularWorkflow = (defaultprops) => {
 
 			if (trigger.trigger_type === "PIPELINE") {
 				if (userdata.support !== true) {
-					//return null
+					return null
 				} 
 			}
 
@@ -8876,7 +8876,7 @@ const AngularWorkflow = (defaultprops) => {
                 }
 
 				if (app.trigger_type === "PIPELINE" && userdata.support !== true) {
-					//return null
+					return null
 				}
 
 				if (app.id === "integration" && userdata.support !== true) {
@@ -13784,7 +13784,7 @@ const AngularWorkflow = (defaultprops) => {
     return null
   }
 
-  const PipelineSidebar = Object.getOwnPropertyNames(selectedTrigger).length === 0 || workflow.triggers[selectedTriggerIndex] === undefined && selectedTrigger.trigger_type !== "SCHEDULE" ? null :
+  const PipelineSidebar = Object.getOwnPropertyNames(selectedTrigger).length === 0 || workflow.triggers[selectedTriggerIndex] === undefined && selectedTrigger.trigger_type !== "SCHEDULE" ? null : !userdata.support === true ? null : 
           <div style={appApiViewStyle}>
             <h3 style={{ marginBottom: "5px" }}>
               {selectedTrigger.app_name}: {selectedTrigger.status}
