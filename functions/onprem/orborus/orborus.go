@@ -2068,9 +2068,7 @@ func handlePipeline(incRequest shuffle.ExecutionRequest) error {
 		if err != nil {
 			log.Printf("[ERROR] Failed Deleting Pipeline %s", err)
 			return err
-		} else {
-			log.Printf("[INFO] successfully deleted the Pipeline: %s", pipelineId)
-		}
+		} 
 	} else if incRequest.Type == "PIPELINE_STOP" {
 		log.Printf("[INFO] Should stop the pipeline %#v", identifier)
 		pipelineId, err := searchPipeline(identifier)
@@ -2278,7 +2276,7 @@ func createPipeline(command, identifier string) (string, error) {
 
 	if err != nil {
 		if strings.Contains(fmt.Sprintf("%s", err), "no existing pipeline found") {
-			log.Printf("[INFO] No existing pipeline found with name: %s. Creating a new one!", identifier)
+			log.Printf("[INFO] No existing pipeline found with id: %s. Creating a new one!", identifier)
 		} else {
 			log.Printf("[ERROR] Failed to search for existing pipeline but continuing anyway : %s", err)
 		}
@@ -2304,7 +2302,6 @@ func createPipeline(command, identifier string) (string, error) {
 			command = command[:startIndex] + baseUrl + command[endIndex:]
 		}
 	}
-
 	requestBody := map[string]interface{}{
 		"definition": command,
 		"name":       identifier,
