@@ -177,6 +177,20 @@ export const triggers = [
       long_description: "Create a schedule based on cron",
 	  id: "",
     },
+    {
+      name: "Pipelines by Tenzir",
+      type: "TRIGGER",
+      status: "uninitialized",
+      description: "BETA: Support only for Tenzir pipelines - trigger",
+      trigger_type: "PIPELINE",
+      errors: null,
+      is_valid: true, 
+      label: "Pipeline",
+      environment: "onprem",
+      large_image: "/images/workflows/tenzir2.png",
+      long_description: "Controls a pipeline to run things",
+	  id: "",
+    },
     /*{
       name: "Office365",
       type: "TRIGGER",
@@ -234,20 +248,6 @@ export const triggers = [
       label: "User input",
       environment: "cloud",
       long_description: "Take user input to continue execution",
-	  id: "",
-    },
-    {
-      name: "Pipelines by Tenzir",
-      type: "TRIGGER",
-      status: "uninitialized",
-      description: "BETA: Support only for Tenzir pipelines - trigger",
-      trigger_type: "PIPELINE",
-      errors: null,
-      is_valid: true, 
-      label: "Pipeline",
-      environment: "onprem",
-      large_image: "/images/workflows/tenzir2.png",
-      long_description: "Controls a pipeline to run things",
 	  id: "",
     },
   ];
@@ -7449,8 +7449,8 @@ const AngularWorkflow = (defaultprops) => {
 
   const paperAppStyle = {
     borderRadius: theme.palette.borderRadius,
-    minHeight: isMobile ? 50 : 70,
-    maxHeight: isMobile ? 50 : 70,
+    minHeight: isMobile ? 50 : 80,
+    maxHeight: isMobile ? 50 : 80,
     minWidth: isMobile ? 50 : "100%",
     maxWidth: isMobile ? 50 : "100%",
     marginTop: "5px",
@@ -7836,6 +7836,7 @@ const AngularWorkflow = (defaultprops) => {
     const triggersViewStyle = {
       marginLeft: 10,
       marginRight: 10,
+      marginTop: 50,
       display: "flex",
       flexDirection: "column",
     }
@@ -7848,7 +7849,7 @@ const AngularWorkflow = (defaultprops) => {
 
 			if (trigger.trigger_type === "PIPELINE") {
 				if (userdata.support !== true) {
-					return null
+					//return null
 				} 
 			}
 
@@ -7914,6 +7915,8 @@ const AngularWorkflow = (defaultprops) => {
               	    <Grid
               	      container
               	      style={{ margin: isMobile ? "10px 0px 0px 0px" : "10px 10px 10px 10px", flex: "10" }}
+                      alignItems="center"
+                      wrap="nowrap"
               	    >
               	      <Grid item>
               	        <ButtonBase>{imageline}</ButtonBase>
@@ -7928,14 +7931,16 @@ const AngularWorkflow = (defaultprops) => {
               	          }}
               	        >
               	          <Grid item style={{ flex: "1", overflow: "hidden", }}>
-              	            <h3 style={{ marginTop: 0, marginBottom: 0, overflow: "hidden" }}>
+              	            <h3 style={{ marginTop: 0, marginBottom: 0, overflow: "hidden", fontSize: '19px' }}>
               	              {trigger.name}
               	            </h3>
               	          </Grid>
-              	          <Grid item style={{ flex: "1" }}>
-              	            {trigger.description}
-              	          </Grid>
-              	        </Grid>
+                          <Grid item style={{ flexGrow: 1 }}>
+                             <Typography variant="body2" style={{ fontSize: '15px' }}>
+                                {trigger.description}
+                             </Typography>
+                          </Grid>
+                       </Grid>
               	      }
               	    </Grid>
               	  </Paper>
@@ -8871,7 +8876,7 @@ const AngularWorkflow = (defaultprops) => {
                 }
 
 				if (app.trigger_type === "PIPELINE" && userdata.support !== true) {
-					return null
+					//return null
 				}
 
 				if (app.id === "integration" && userdata.support !== true) {
@@ -13779,7 +13784,7 @@ const AngularWorkflow = (defaultprops) => {
     return null
   }
 
-  const PipelineSidebar = Object.getOwnPropertyNames(selectedTrigger).length === 0 || workflow.triggers[selectedTriggerIndex] === undefined && selectedTrigger.trigger_type !== "SCHEDULE" ? null : !userdata.support === true ? null : 
+  const PipelineSidebar = Object.getOwnPropertyNames(selectedTrigger).length === 0 || workflow.triggers[selectedTriggerIndex] === undefined && selectedTrigger.trigger_type !== "SCHEDULE" ? null :
           <div style={appApiViewStyle}>
             <h3 style={{ marginBottom: "5px" }}>
               {selectedTrigger.app_name}: {selectedTrigger.status}
