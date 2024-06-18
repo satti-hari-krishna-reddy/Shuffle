@@ -1352,7 +1352,7 @@ const AngularWorkflow = (defaultprops) => {
       });
   };
 
-  const handleKafkaSubmit = (trigger) => {
+  const handleCommandSubmit = (trigger) => {
     if (trigger.trigger_type !== "PIPELINE") {
       toast("Unable to save the configuration");
       return;
@@ -1360,36 +1360,16 @@ const AngularWorkflow = (defaultprops) => {
   
     trigger.parameters = []
 
-    const topic = document.getElementById('topic')?.value
-    const bootstrapServers = document.getElementById('bootstrap_servers')?.value
-    const groupId = document.getElementById('group_id')?.value
-    //const autoOffsetReset = document.getElementById('auto_offset_reset')?.value;
+    const command = document.getElementById('sigma')?.value
 
-    if(topic) {
+    if(command) {
       trigger.parameters.push({
-        name: "topic",
-        value: topic
+        name: "command",
+        value: command
       })
     } else {
-      toast("Please enter the topic name");
+      toast("Please enter the comamnd");
       return;
-    }
-  
-    if (bootstrapServers) {
-      trigger.parameters.push({
-        name: "bootstrap_servers",
-        value: bootstrapServers
-      });
-    } else {
-      toast("please enter bootstrap server details");
-      return;
-    }
-  
-    if (groupId) {
-      trigger.parameters.push({
-        name: "group_id",
-        value: groupId
-      });
     }
   
     // if (autoOffsetReset) {
@@ -14509,14 +14489,18 @@ const AngularWorkflow = (defaultprops) => {
                 <div
                   key="syslogListener"
                   onClick={() => {
-                    // setSelectedOption("Syslog listener")
-                    // setTenzirConfigModalOpen(true);
-                  }}
+                    if(selectedTrigger.status === "running"){
+                      toast("please stop the trigger to edit the configuration");
+                      return;
+                    } else {
+                    setSelectedOption("Syslog listener");
+                    setTenzirConfigModalOpen(true);
+                  }}}
                   style={{
                     border: "1px solid rgba(255,255,255,0.3)",
                     borderRadius: theme.palette.borderRadius,
                     padding: 10,
-                    cursor: "not-allowed",
+                    cursor: "pointer",
                     marginTop: 5,
                     display: "flex",
                     alignItems: "center",
@@ -14529,7 +14513,6 @@ const AngularWorkflow = (defaultprops) => {
                         onChange={() => setSelectedOption("Syslog listener")}
                         value={"Syslog listener"}
                         name="option"
-                        disabled={true}
                       />
                     }
                     label="Start Syslog listener"
@@ -14539,14 +14522,18 @@ const AngularWorkflow = (defaultprops) => {
                 <div
                   key="sigmaRulesearch"
                   onClick={() => {
-                    // setSelectedOption("Sigma Rulesearch")
-                    // setTenzirConfigModalOpen(true);
-                  }}
+                    if(selectedTrigger.status === "running"){
+                      toast("please stop the trigger to edit the configuration");
+                      return;
+                    } else {
+                    setSelectedOption("Sigma Rulesearch");
+                    setTenzirConfigModalOpen(true);
+                  }}}
                   style={{
                     border: "1px solid rgba(255,255,255,0.3)",
                     borderRadius: theme.palette.borderRadius,
                     padding: 10,
-                    cursor: "not-allowed",
+                    cursor: "pointer",
                     marginTop: 5,
                     display: "flex",
                     alignItems: "center",
@@ -14559,7 +14546,6 @@ const AngularWorkflow = (defaultprops) => {
                         onChange={() => setSelectedOption("Sigma Rulesearch")}
                         value={"Sigma Rulesearch"}
                         name="option"
-                        disabled={true}
                       />
                     }
                     label="Run Sigma Rulesearch"
@@ -14606,39 +14592,7 @@ const AngularWorkflow = (defaultprops) => {
                     disabled={selectedTrigger.status === "running"}
                     onClick={() => {
 
-                      const topic = (selectedTrigger?.parameters?.find(param => param.name === "topic")?.value) || ''
-                      const bootstrapServers = (selectedTrigger?.parameters?.find(param => param.name === "bootstrap_servers")?.value) || ''
-                      const groupId = (selectedTrigger?.parameters?.find(param => param.name === "group_id")?.value) || ''
-                      // const autoOffsetReset = (selectedTrigger?.parameters?.find(param => param.name === "auto_offset_reset")?.value) || ''
-                      let command = "from kafka"
-                      
-                      if(topic) {
-                        command = `${command} -t ${topic}`
-                      } else {
-                        toast("please enter the topic name")
-                        return;
-                      }
-                      if(bootstrapServers) {
-                        command = `${command} -e -o stored -X bootstrap.servers=${bootstrapServers}`
-                      } else {
-                        toast("please enter the bootstrap servers details")
-                        return;
-                      }
-
-                      if(groupId) {
-                         command = `${command},group.id=${groupId}`
-                      } else {
-                        command = `${command},group.id=${selectedTrigger.id}`
-                      }
-                      // if(autoOffsetReset) {
-                      //   command = `${command},auto.offset.reset=${autoOffsetReset}`
-                      // } else {
-                      //   command = `${command},auto.offset.reset=earliest`
-
-                      // }
-                      command = `${command},auto.offset.reset=earliest`
-                      command = `${command},client.id=${selectedTrigger.id},enable.auto.commit=true,auto.commit.interval.ms=1`
-                      command = `${command} read json | to ${globalUrl}/api/v1/pipelines/pipeline_${selectedTrigger.id}`
+                      const command = (selectedTrigger?.parameters?.find(param => param.name === "command")?.value) || ''
 
                       const pipelineConfig = {
                         command: command,
@@ -19691,8 +19645,8 @@ const AngularWorkflow = (defaultprops) => {
               pointerEvents: "auto",
               color: "white",
               minWidth: 600,
-              minHeight: 450,
-              maxHeight: 450,
+              minHeight: 200,
+              maxHeight: 200,
               padding: 15,
               overflow: "hidden",
               zIndex: 10012,
@@ -19709,91 +19663,24 @@ const AngularWorkflow = (defaultprops) => {
               overflowY: "auto",
               overflowX: isMobile ? "auto" : "hidden",
             }}
-          >
-            <DialogTitle id="tenzir-config-modal" style={{ cursor: "move" }}>
-              <div style={{ color: "white" }}>Configuration options for {selectedOption}</div>
-            </DialogTitle>
+          > 
             <DialogContent>
-
-              {selectedOption === "Kafka Queue" ? 
-				<div>
-                  <b>Topic</b>
-                  <TextField
-                    id="topic"
-                    style={{
-                      backgroundColor: theme.palette.inputColor,
-                      borderRadius: theme.palette.borderRadius,
-                    }}
-                    InputProps={{
-                      style: {},
-                    }}
-                    fullWidth
-                    color="primary"
-                    placeholder={"topic name"}
-                    defaultValue={(selectedTrigger?.parameters?.find(param => param.name === "topic")?.value) || ''}
-                  />
-                  <b>bootstrap.servers</b>
-                  <TextField
-                    id="bootstrap_servers"
-                    style={{
-                      backgroundColor: theme.palette.inputColor,
-                      borderRadius: theme.palette.borderRadius,
-                    }}
-                    InputProps={{
-                      style: {},
-                    }}
-                    fullWidth
-                    color="primary"
-                    placeholder={"broker1.example.com:9092,192.168.1.100:9092"}
-                    defaultValue={(selectedTrigger?.parameters?.find(param => param.name === "bootstrap_servers")?.value) || ''}
-                  />
-                  <b>group.id</b>
-                  <TextField
-                    id="group_id"
-                    style={{
-                      backgroundColor: theme.palette.inputColor,
-                      borderRadius: theme.palette.borderRadius,
-                    }}
-                    InputProps={{
-                      style: {},
-                    }}
-                    fullWidth
-                    color="primary"
-                    placeholder={"tenzir"}
-                    defaultValue={(selectedTrigger?.parameters?.find(param => param.name === "group_id")?.value) || ''}    
-                  />
-                  {/* <b>auto.offest.reset</b>
-                  <TextField
-                    id="auto_offset_reset"
-                    style={{
-                      backgroundColor: theme.palette.inputColor,
-                      borderRadius: theme.palette.borderRadius,
-                    }}
-                    InputProps={{
-                      style: {},
-                    }}
-                    fullWidth
-                    color="primary"
-                    placeholder={"earliest"}
-                    defaultValue={(selectedTrigger?.parameters?.find(param => param.name === "auto_offset_reset")?.value) || ''}
-                  /> */}
-                </div>
-              : null}
-
-			  <TextField
-				id="bootstrap_servers"
-				style={{
-				  backgroundColor: theme.palette.inputColor,
-				  borderRadius: theme.palette.borderRadius,
-				}}
-				InputProps={{
-				  style: {},
-				}}
-				fullWidth
-				color="primary"
-				placeholder={"broker1.example.com:9092,192.168.1.100:9092"}
-				defaultValue={(selectedTrigger?.parameters?.find(param => param.name === "bootstrap_servers")?.value) || ''}
-			  />
+				   
+              <b>command</b>
+              <TextField
+                id="sigma"
+                style={{
+                  backgroundColor: theme.palette.inputColor,
+                  borderRadius: theme.palette.borderRadius,
+                }}
+                InputProps={{
+                  style: {},
+                }}
+                fullWidth
+                color="primary"
+                placeholder={"command"}
+                defaultValue={(selectedTrigger?.parameters?.find(param => param.name === "command")?.value) || ''}
+              />
 
             </DialogContent>
             <DialogActions>
@@ -19809,7 +19696,7 @@ const AngularWorkflow = (defaultprops) => {
               <Button
                 style={{ borderRadius: "0px" }}
                 onClick={() => {
-                  handleKafkaSubmit(selectedTrigger);
+                  handleCommandSubmit(selectedTrigger);
                 }}
                 color="primary"
               >
