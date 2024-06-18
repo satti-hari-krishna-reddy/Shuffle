@@ -1673,7 +1673,7 @@ func main() {
 
 					  toBeRemoved.Data = append(toBeRemoved.Data, incRequest)
 
-				} else if incRequest.Type == "DISABLE_SIGMA_RULES" {
+				} else if incRequest.Type == "DISABLE_SIGMA_FOLDER" {
 					err := removeAllFiles()
 					if err != nil {
 					 log.Printf("[ERROR] Failed to disable the sigma rules: %s", err)
@@ -2062,11 +2062,6 @@ func handlePipeline(incRequest shuffle.ExecutionRequest) error {
 		_, err := createPipeline(command, identifier)
 		if err != nil {
 			log.Printf("[ERROR] Failed to create pipeline: %s", err)
-			return err
-		}
-		err = handleFileCategoryChange()
-		if err != nil {
-			log.Printf("[ERROR] Failed to download rules: %s", err)
 			return err
 		}
 	} else if incRequest.Type == "PIPELINE_DELETE" {
@@ -2637,7 +2632,7 @@ func extractFile(f *zip.File, destDir string) error {
 func copyToTenzir(srcPath, destPath string) error {
 	containerName := "tenzir-node"
 
-	// Check if the extracted_files directory exists in the container
+	// Check if the sigma_rules directory exists in the container
 	checkCmd := exec.Command("docker", "exec", containerName, "test", "-d", destPath)
 	if err := checkCmd.Run(); err == nil {
 		rmCmd := exec.Command("docker", "exec", "-u", "root", containerName, "rm", "-rf", destPath)
@@ -2660,6 +2655,13 @@ func copyToTenzir(srcPath, destPath string) error {
 	return nil
 }
 
+func removeAllFiles() error {
+	containerName := "tenzir-node"
+	sigmaPath := "/var/lib/tenzir/sigma_rules/*"
+
+	return removePath(containerName, sigmaPath)
+}
+
 func removeFile(fileName string) error {
 	containerName := "tenzir-node"
 	srcPath := fmt.Sprintf("/var/lib/tenzir/sigma_rules/%s", fileName)
@@ -2672,21 +2674,14 @@ func removeFile(fileName string) error {
 	return removePath(containerName, srcPath)
 }
 
-func removeAllFiles() error {
-	containerName := "tenzir-node"
-	sigmaPath := "/var/lib/tenzir/sigma_rules/*"
-
-	return removePath(containerName, sigmaPath)
-}
-
 func removePath(containerName, path string) error {
-	rmCmd := exec.Command("docker", "exec", "-u", "root", containerName, "rm", "-r", path)
-	if err := rmCmd.Run(); err != nil {
-		return fmt.Errorf("error removing path: %v", err)
+	rmCmd := exec.Command("docker", "exec", "-u", "root", containerName, "rm", "-rf", path)
+	output, err := rmCmd.CombinedOutput() 
+	if err != nil {
+		return fmt.Errorf("error removing path: %v, output: %s", err, output)
 	}
 	return nil
 }
-
 
 // func savePipelineData(pipelineId, identifier, status string) error {
 
