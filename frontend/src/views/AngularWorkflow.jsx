@@ -19688,14 +19688,29 @@ const AngularWorkflow = (defaultprops) => {
     const handleSubmit = () => {
       const selectedRuleFiles = rules
         .filter(rule => selectedRules.includes(rule.file_id));
+
+        if (selectedTrigger.trigger_type !== "PIPELINE") {
+          toast("Unable to save the configuration");
+          return;
+        }
+      
+        selectedTrigger.parameters = selectedRuleFiles;
+    
     
       console.log('Selected Rule Files:', selectedRuleFiles);
       console.log('Selected Rule File Names:', selectedRuleFiles.map(rule => rule.file_id));
       
       setTenzirConfigModalOpen(false);
     };
-    
 
+    useEffect(()=>{
+      if (selectedTrigger.trigger_type !== "PIPELINE") {
+        //toast("Unable to save the configuration");
+        return;
+      }
+      setSelectedRules(selectedTrigger.parameters);
+    },[])
+    
     const enabledSigmaInfo = rules.filter(rule => rule.is_enabled);
 
     <Dialog
