@@ -1432,6 +1432,20 @@ const AngularWorkflow = (defaultprops) => {
     }
   
     setTenzirConfigModalOpen(false);
+  } else if (selectedOption === "Syslog listener") {
+    trigger.parameters = []
+
+    const endpoint = document.getElementById('endpoint')?.value
+
+    if(endpoint) {
+      trigger.parameters.push({
+        name: "endpoint",
+        value: endpoint
+      })
+    } else {
+      toast("Please enter your endpoint");
+      return;
+    }
   }
 
   };
@@ -14730,7 +14744,28 @@ const AngularWorkflow = (defaultprops) => {
                         start_node: "",
                       };
                       submitPipeline(selectedTrigger, selectedTriggerIndex, pipelineConfig);
-                    }}}
+                    } else if (selectedOption === "Syslog listener"){
+                      let command = ""
+                        const endpoint = (selectedTrigger?.parameters?.find(param => param.name === "endpoint")?.value) || ''
+                        if(endpoint) {
+                          command = `from tcp://${endpoint} | read syslog | import`
+                        } else {
+                          toast("please enter the topic name")
+                          return;
+                        }
+
+                        const pipelineConfig = {
+                          command: command,
+                          name: selectedTrigger.label,
+                          type: "create",
+                          environment: selectedTrigger.environment,
+                          workflow_id: workflow.id,
+                          trigger_id: selectedTrigger.id,
+                          start_node: "",
+                        };
+                        submitPipeline(selectedTrigger, selectedTriggerIndex, pipelineConfig);
+                    }
+                  }}
                     color="primary"
                   >
                     Start
@@ -19862,6 +19897,30 @@ const AngularWorkflow = (defaultprops) => {
                 defaultValue={
                   selectedTrigger?.parameters?.find(
                     (param) => param.name === "auto_offset_reset",
+                  )?.value || ""
+                }
+              />
+            </div>
+          ) : null}{" "}
+
+{selectedOption === "Syslog listener" ? (
+            <div>
+              <b>End Point</b>
+              <TextField
+                id="endpoint"
+                style={{
+                  backgroundColor: theme.palette.inputColor,
+                  borderRadius: theme.palette.borderRadius,
+                }}
+                InputProps={{
+                  style: {},
+                }}
+                fullWidth
+                color="primary"
+                placeholder={"0.0.0.0:5162"}
+                defaultValue={
+                  selectedTrigger?.parameters?.find(
+                    (param) => param.name === "endpoint",
                   )?.value || ""
                 }
               />
