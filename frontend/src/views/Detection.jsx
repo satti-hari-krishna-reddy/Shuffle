@@ -67,7 +67,7 @@ const Detection = ({
     }
 
     setTimeout(() => {
-      
+      // Additional logic if needed
     }, 2500);
   };
 
@@ -150,7 +150,7 @@ const Detection = ({
               setTimeout(() => {
                 setLoading(false);
                 window.location.reload();
-              }, 15000); 
+              }, 5000); 
             } else {
               setLoading(false);
               toast("Failed to connect to SIEM");
