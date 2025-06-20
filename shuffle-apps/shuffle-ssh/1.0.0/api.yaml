@@ -1,0 +1,53 @@
+name: shuffle-ssh
+description: Run SSH commands on remote machines using password or key auth
+app_version: 1.0.0
+
+contact_info:
+  name: "Hari Krishna"
+  url: https://github.com/satti-hari-krishna-reddy
+  email: hari.66.hks@gmail.com
+
+actions:
+  - name: run_ssh_command
+    description: Connect to a remote host via SSH and execute a command
+    parameters:
+      - name: host
+        description: Hostname or IP of the SSH target
+        required: true
+        schema:
+          type: string
+
+      - name: port
+        description: SSH port (default 22)
+        required: false
+        schema:
+          type: string
+
+      - name: user_name
+        description: SSH username
+        required: true
+        schema:
+          type: string
+
+      - name: private_key_file_id
+        description: File ID of the uploaded private key (optional if using password)
+        required: false
+        schema:
+          type: string
+
+      - name: password
+        description: Password for authentication (optional if using key)
+        required: false
+        schema:
+          type: string
+
+      - name: command
+        description: Command to execute on the remote host
+        required: true
+        multiline: true
+        schema:
+          type: string
+
+    returns:
+      schema:
+        type: object
